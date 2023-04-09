@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -16,8 +17,12 @@ import com.example.firebasepushex.FcmPush
 import com.example.firebasepushex.R
 import com.example.firebasepushex.model.Profile
 import com.google.firebase.storage.FirebaseStorage
+import okhttp3.Call
+import okhttp3.Response
+import java.io.IOException
 
-class ProfileActivity : BaseActivity() {
+class ProfileActivity : BaseActivity(), okhttp3.Callback {
+    val TAG = "ProfileActivity"
     val REQUEST_CODE_PICK_PHOTO = 1001
     private lateinit var ivProfile: ImageView
     private lateinit var tvEmail: TextView
@@ -27,7 +32,7 @@ class ProfileActivity : BaseActivity() {
     private lateinit var storage: FirebaseStorage
     private lateinit var thisProfile: Profile
     private var mode: Int = 0
-    private var fcmPush = FcmPush()
+    private lateinit var fcmPush: FcmPush
 
     @RequiresApi(33)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,8 +136,9 @@ class ProfileActivity : BaseActivity() {
 
     private fun sendPushNotification() {
         thisProfile.uid?.let { targetUid ->
+            if(!this::fcmPush.isInitialized)
+                fcmPush = FcmPush(this)
             fcmPush.sendMessage(targetUid, "Firebase Push Ex", "Test push notification.")
-            Toast.makeText(this, "Push notification was sent.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -156,5 +162,15 @@ class ProfileActivity : BaseActivity() {
                 }
         }
     }
+
+    // FCM Puch notification event methods - start
+    override fun onResponse(call: Call, response: Response) {
+        Log.d(TAG, "Push notification was sent.")
+    }
+
+    override fun onFailure(call: Call, e: IOException) {
+        Log.d(TAG, "Push notification was failed.")
+    }
+    // FCM Puch notification event methods - end
 
 }
