@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "162620467064",
+    "project_id": "fir-pushex-990e6",
+    "storage_bucket": "fir-pushex-990e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162620467064:android:4fdbd4260cdb39fb028a8d",
+        "android_client_info": {
+          "package_name": "com.example.firebasepushex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162620467064-oudhfbr9mvil5tg1fatv5phalofod39t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeqjmu7GeTdMx6d3RxKMjHd4_5_B7f2Cg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "162620467064-oudhfbr9mvil5tg1fatv5phalofod39t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
