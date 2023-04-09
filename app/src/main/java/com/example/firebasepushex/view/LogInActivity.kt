@@ -1,33 +1,30 @@
-package com.example.firebasepushex
+package com.example.firebasepushex.view
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.example.firebasepushex.Constant
 import com.example.firebasepushex.Constant.DB_PROFILES
+import com.example.firebasepushex.R
+import com.example.firebasepushex.model.Profile
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 
-class LogInActivity : AppCompatActivity() {
-    private val REQUEST_CODE_GOOGLE_LOGIN = 1002
-
+class LogInActivity : BaseActivity() {
+    val REQUEST_CODE_GOOGLE_LOGIN = 1002
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +33,6 @@ class LogInActivity : AppCompatActivity() {
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
 
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -45,17 +40,6 @@ class LogInActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         askNotificationPermission()
-    }
-
-    // Declare the launcher at the top of your Activity/Fragment:
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
-        }
     }
 
     private fun askNotificationPermission() {
@@ -74,6 +58,17 @@ class LogInActivity : AppCompatActivity() {
                 // Directly ask for the permission
                 requestPermissionLauncher.launch(POST_NOTIFICATIONS)
             }
+        }
+    }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+        } else {
+            // TODO: Inform user that that your app will not show notifications.
         }
     }
 
@@ -107,6 +102,8 @@ class LogInActivity : AppCompatActivity() {
                 if(task.isSuccessful) {
                     Toast.makeText(this, "Email LogIn succeeded.", Toast.LENGTH_SHORT).show()
                     checkProfileExist()
+                } else {
+                    Toast.makeText(this, "Email LogIn failed.", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -138,9 +135,9 @@ class LogInActivity : AppCompatActivity() {
             db.collection(DB_PROFILES).document(it)
                 .get().addOnCompleteListener { task ->
                     if(task.isSuccessful) {
-                        val profile = Profile.makeInstance(task.result.data)
+                        val profile = Profile.makeInstance(task.result)
                         profile?.email?.let {
-                            moveMainPage(auth.currentUser)
+                            moveMainPage()
                             finish()
                             return@addOnCompleteListener
                         }
@@ -153,14 +150,13 @@ class LogInActivity : AppCompatActivity() {
     private fun moveProfilePage(user: FirebaseUser?) {
         user?.let {
             val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra(Constant.FIELD_EMAIL, user.email)
+            intent.putExtra(Constant.FIELD_UID, user.uid)
             startActivity(intent)
         }
     }
 
-    private fun moveMainPage(user: FirebaseUser?) {
-        user?.let {
-            startActivity(Intent(this, MainActivity::class.java))
-        }
+    private fun moveMainPage() {
+        startActivity(Intent(this, MainActivity::class.java))
     }
+
 }

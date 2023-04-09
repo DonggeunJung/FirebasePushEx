@@ -1,4 +1,4 @@
-package com.example.firebasepushex
+package com.example.firebasepushex.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -27,7 +27,7 @@ class BaseAdapter : RecyclerView.Adapter<BaseAdapter.BaseVH>() {
         return list!![index]!!
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseAdapter.BaseVH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVH {
         val inflater = LayoutInflater.from(parent.context)
         val itemView: View = inflater.inflate(itemLayout, parent, false)
         return BaseVH(itemView)
@@ -43,7 +43,7 @@ class BaseAdapter : RecyclerView.Adapter<BaseAdapter.BaseVH>() {
         return list?.size ?: 0
     }
 
-    protected fun setClickable(holder: BaseAdapter.BaseVH, position: Int): View {
+    protected fun setClickable(holder: BaseVH, position: Int): View {
         return holder.itemView.also{ setClickable(it, position) }
     }
 
