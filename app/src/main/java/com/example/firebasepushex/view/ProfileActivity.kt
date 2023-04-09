@@ -17,12 +17,14 @@ import com.example.firebasepushex.FcmPush
 import com.example.firebasepushex.R
 import com.example.firebasepushex.model.Profile
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Response
 import java.io.IOException
 
 class ProfileActivity : BaseActivity(), okhttp3.Callback {
-    val TAG = "ProfileActivity"
     val REQUEST_CODE_PICK_PHOTO = 1001
     private lateinit var ivProfile: ImageView
     private lateinit var tvEmail: TextView
@@ -165,11 +167,15 @@ class ProfileActivity : BaseActivity(), okhttp3.Callback {
 
     // FCM Puch notification event methods - start
     override fun onResponse(call: Call, response: Response) {
-        Log.d(TAG, "Push notification was sent.")
+        CoroutineScope(Dispatchers.Main).launch {
+            Toast.makeText(screen, "Push notification was sent.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onFailure(call: Call, e: IOException) {
-        Log.d(TAG, "Push notification was failed.")
+        CoroutineScope(Dispatchers.Main).launch {
+            Toast.makeText(screen, "Push notification was failed.", Toast.LENGTH_SHORT).show()
+        }
     }
     // FCM Puch notification event methods - end
 
