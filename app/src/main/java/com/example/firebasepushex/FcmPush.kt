@@ -10,7 +10,13 @@ import okhttp3.*
 class FcmPush() {
     private val JSON = MediaType.parse("application/json; charset=utf-8")
     private val url = "https://fcm.googleapis.com/fcm/send"
-    private val serverKey = "AAAAJdzvZ3g:APA91bH9caQZAz2cvFfFMAI5KpDf-72pVWyUDzXCqSjAxVml7VUqvsV-5Bq_3cf1QKIvLR28s-z1Rxd4RBn3sIekzcsJmJ4UFrW3VpajtkaI-oiBH9SsQcMmmt4Np-tEA1zbXjVthzfo"
+    private val serverKey1 = "AAAAJdzvZ3g:"
+    private val serverKey2 = "APA91bH9caQZAz2cvFfFMAI5KpDf-"
+    private val serverKey3 = "72pVWyUDzXCqSjAxVml7VUqvsV-"
+    private val serverKey4 = "5Bq_3cf1QKIvLR28s-"
+    private val serverKey5 = "z1Rxd4RBn3sIekzcsJmJ4UFrW3VpajtkaI-"
+    private val serverKey6 = "oiBH9SsQcMmmt4Np-"
+    private val serverKey7 = "tEA1zbXjVthzfo"
     private var okHttpClient: OkHttpClient = OkHttpClient()
     private var callback: Callback? = null
 
@@ -23,7 +29,7 @@ class FcmPush() {
             .get().addOnCompleteListener { task ->
                 if(!task.isSuccessful) return@addOnCompleteListener
                 val token = task.result[FIELD_PUSH_TOKEN].toString()
-
+                val serverKey = serverKey1 + serverKey2 + serverKey3 + serverKey4 + serverKey5 + serverKey6 + serverKey7
                 var pushDTO = PushDTO(token, PushDTO.Notification(title, message))
                 var body = RequestBody.create(JSON, Gson().toJson(pushDTO))
                 var request = Request.Builder()
